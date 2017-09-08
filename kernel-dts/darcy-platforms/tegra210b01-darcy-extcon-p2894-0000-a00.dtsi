@@ -25,7 +25,7 @@
 										0x0 0x2
 										0x1 0x2
 										0x2 0x1>;
-			gpios = <&gpio TEGRA_GPIO(Z, 0) 0 &max77620 0 0>;
+			gpios = <&gpio TEGRA_GPIO(Z, 0) 0 &gpio TEGRA_GPIO(Z, 1) 0>;
 			extcon-gpio,out-cable-names = <EXTCON_USB EXTCON_USB_Host EXTCON_NONE>;
 			wakeup-source;
 			#extcon-cells = <1>;

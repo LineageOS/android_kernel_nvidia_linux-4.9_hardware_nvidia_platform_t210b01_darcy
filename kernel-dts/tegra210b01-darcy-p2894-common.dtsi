@@ -303,6 +303,15 @@
 	};
 
 	pinmux@700008d4 {
+		pinmux_default: common {
+			pz1 {
+				nvidia,pins = "pz1";
+				nvidia,function = "rsvd2";
+				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
+			};
+		};
 		dvfs_pwm_active_state: dvfs_pwm_active {
 			dvfs_pwm_pbb1 {
 				nvidia,pins = "dvfs_pwm_pbb1";
