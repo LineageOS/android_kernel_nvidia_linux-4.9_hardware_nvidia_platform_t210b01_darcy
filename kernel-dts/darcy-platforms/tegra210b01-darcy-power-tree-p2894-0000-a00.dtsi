@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License along
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include <ers-platforms/tegra210b01-ers-pmic-e2176-1001-a00.dtsi>
+#include "ers-platforms/tegra210b01-ers-pmic-e2175-1122-a00.dtsi"
 #include <t210-common-platforms/tegra210-ers-fixed-e2174-1101-a00.dtsi>
-#include <t210-common-platforms/tegra210-ers-power-dvfs-e2174-1101-a00.dtsi>
+#include "ers-platforms/tegra210b01-ers-pmic-e2176-1001-a00.dtsi"
 
 / {
 	i2c@7000d000 {

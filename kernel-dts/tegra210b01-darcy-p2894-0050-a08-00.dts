@@ -19,16 +19,15 @@
  */
 #include "tegra210b01-darcy-p2894-common.dtsi"
 #include "foster-platforms/tegra210-darcy-pinmux-p2894-0000-a00.dtsi"
+#include "darcy-platforms/tegra210b01-darcy-power-tree-p2894-0000-a00.dtsi"
 #include "darcy-platforms/tegra210b01-darcy-extcon-p2894-0000-a00.dtsi"
-#include "foster-platforms/tegra210-darcy-p2894-emc-a00.dtsi"
 #include "darcy-platforms/tegra210b01-darcy-pcie.dtsi"
 #include "foster-platforms/tegra210-darcy-prods.dtsi"
-#include "foster-platforms/tegra210-darcy-power-dvfs-p2894-0050-a08.dtsi"
 #include "foster-platforms/tegra210-darcy-edp-p2894-0050-a08.dtsi"
 
 / {
 	model = "darcy";
-	compatible = "nvidia,darcy", "nvidia,foster-e", "nvidia,tegra210";
+	compatible = "nvidia,darcy", "nvidia,foster-e", "nvidia,tegra210b01";
 	nvidia,dtsfilename = __FILE__;
 	nvidia,dtbbuildtime = __DATE__, __TIME__;
 	nvidia,fastboot-usb-pid = <0xb442>;
