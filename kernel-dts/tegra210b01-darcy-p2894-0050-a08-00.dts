@@ -22,7 +22,6 @@
 #include "darcy-platforms/tegra210b01-darcy-power-tree-p2894-0000-a00.dtsi"
 #include "darcy-platforms/tegra210b01-darcy-extcon-p2894-0000-a00.dtsi"
 #include "darcy-platforms/tegra210b01-darcy-pcie.dtsi"
-#include "foster-platforms/tegra210-darcy-prods.dtsi"
 #include "foster-platforms/tegra210-darcy-edp-p2894-0050-a08.dtsi"
 
 / {
