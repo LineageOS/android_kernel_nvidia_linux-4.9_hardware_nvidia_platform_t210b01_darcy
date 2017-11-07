@@ -43,7 +43,11 @@
 	usb_cd: usb_cd@7009f000 {
 		compatible = "nvidia,tegra210-usb-cd";
 		reg = <0x0 0x7009f000 0x0 0x1000>;
+#if defined(LINUX_VERSION) && LINUX_VERSION >= 409
+		phys = <&{/xusb_padctl@7009f000/pads/usb2/lanes/usb2-0}>;
+#else
 		phys = <&tegra_padctl_uphy TEGRA_PADCTL_UPHY_UTMI_P(0)>;
+#endif
 		phy-names = "otg-phy";
 		status = "okay";
 	};
@@ -183,6 +187,79 @@
 		status = "okay";
 	};
 
+#if TEGRA_XUSB_PADCONTROL_VERSION >= DT_VERSION_2
+	xusb_padctl@7009f000 {
+		status = "okay";
+
+		pads {
+			usb2 {
+				status = "okay";
+
+				lanes {
+					usb2-0 {
+						status = "okay";
+						nvidia,function = "xusb";
+					};
+					usb2-2 {
+						status = "okay";
+						nvidia,function = "xusb";
+					};
+				};
+			};
+
+			pcie {
+				status = "okay";
+
+				lanes {
+					pcie-0 {
+						status = "okay";
+						nvidia,function = "pcie-x1";
+					};
+					pcie-1 {
+						status = "okay";
+						nvidia,function = "xusb";
+					};
+					pcie-2 {
+						status = "okay";
+						nvidia,function = "pcie-x4";
+					};
+					pcie-3 {
+						status = "okay";
+						nvidia,function = "pcie-x4";
+					};
+					pcie-4 {
+						status = "okay";
+						nvidia,function = "xusb";
+					};
+					pcie-5 {
+						status = "okay";
+						nvidia,function = "xusb";
+					};
+				};
+			};
+		};
+
+		ports {
+			usb2-0 {
+				status = "okay";
+				mode = "otg";
+			};
+			usb2-2 {
+				status = "okay";
+				mode = "host";
+			};
+			usb3-0 {
+				status = "okay";
+				nvidia,usb2-companion = <0>;
+			};
+			usb3-1 {
+				status = "okay";
+				nvidia,usb2-companion = <2>;
+			};
+		};
+	};
+#endif
+
 	pinctrl@7009f000 {
 		compatible = "nvidia,tegra21xb01-padctl-uphy";
 		clocks = <&tegra_car TEGRA210_CLK_HSIC_TRK>,
@@ -256,6 +333,13 @@
 
 	xusb@70090000 {
 		compatible = "nvidia,tegra210b01-xhci";
+#if TEGRA_XUSB_PADCONTROL_VERSION >= DT_VERSION_2
+		phys = <&{/xusb_padctl@7009f000/pads/usb2/lanes/usb2-0}>,
+			<&{/xusb_padctl@7009f000/pads/usb2/lanes/usb2-2}>,
+			<&{/xusb_padctl@7009f000/pads/pcie/lanes/pcie-5}>,
+			<&{/xusb_padctl@7009f000/pads/pcie/lanes/pcie-4}>;
+		phy-names = "usb2-0", "usb2-2", "usb3-0", "usb3-1";
+#else
 		phys = <&tegra_padctl_uphy TEGRA_PADCTL_UPHY_UTMI_P(0)>,
 			<&tegra_padctl_uphy TEGRA_PADCTL_UPHY_USB3_P(0)>,
 			<&tegra_padctl_uphy TEGRA_PADCTL_UPHY_UTMI_P(2)>,
@@ -263,6 +347,7 @@
 			<&tegra_padctl_uphy TEGRA_PADCTL_UPHY_UTMI_P(1)>,
 			<&tegra_padctl_uphy TEGRA_PADCTL_UPHY_USB3_P(2)>;
 		phy-names = "utmi-0", "usb3-0", "utmi-2", "usb3-1", "utmi-1", "usb3-2";
+#endif
 		#extcon-cells = <1>;
 		status = "okay";
 		nvidia,pmc-wakeup =
@@ -280,8 +365,13 @@
 
 	xudc@700d0000 {
 		compatible = "nvidia,tegra210b01-xudc";
+#if TEGRA_XUSB_PADCONTROL_VERSION >= DT_VERSION_2
+		phys =	<&{/xusb_padctl@7009f000/pads/usb2/lanes/usb2-0}>,
+				<&{/xusb_padctl@7009f000/pads/pcie/lanes/pcie-5}>;
+#else
 		phys =  <&tegra_padctl_uphy TEGRA_PADCTL_UPHY_UTMI_P(0)>,
 				<&tegra_padctl_uphy TEGRA_PADCTL_UPHY_USB3_P(0)>;
+#endif
 		phy-names = "usb2", "usb3";
 		#extcon-cells = <1>;
 		status = "okay";
