@@ -106,7 +106,9 @@
 	};
 
 	sdhci@700b0200 { /* SDMMC2 for Wifi */
+		mmc-ocr-mask = <0x8>;
 		uhs-mask = <0x8>;
+		max-clk-limit = <200000000>;
 		power-off-rail;
 		status = "okay";
 	};
@@ -809,7 +811,7 @@
 	};
 
 	bcmdhd_wlan {
-		/*sdhci-host = <&sdmmc2>;*/
+		sdhci-host = <&sdmmc2>;
 		pwr-retry-cnt = <5>;
 		country_code_map {
 			CC_XV {
