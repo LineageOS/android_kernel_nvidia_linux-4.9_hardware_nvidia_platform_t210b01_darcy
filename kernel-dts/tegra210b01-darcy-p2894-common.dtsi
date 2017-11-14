@@ -164,6 +164,9 @@
 		status = "disabled";
 	};
 
+#if defined(LINUX_VERSION) && LINUX_VERSION >= 409
+	aconnect@702c0000 {
+#endif
 	ahub {
 		i2s@702d1100 {
 			pinctrl-names = "dap_active", "dap_inactive";
@@ -175,7 +178,9 @@
 			fsync-width = <0>;
 		};
 	};
-
+#if defined(LINUX_VERSION) && LINUX_VERSION >= 409
+	};
+#endif
 
 	extcon {
 		extcon@0 {
