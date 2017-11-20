@@ -35,7 +35,7 @@
 #include <dt-bindings/iio/meter/ina3221x.h>
 #include <t210-common-platforms/tegra210-sysedp.dtsi>
 #include <tegra210-soc/tegra210-audio.dtsi>
-#include "foster-platforms/tegra210-foster-cpufreq.dtsi"
+#include "darcy-platforms/tegra210b01-darcy-cpufreq.dtsi"
 #include "foster-platforms/tegra210-foster-powermon-p2530-0930-e01.dtsi"
 #include <tegra210-soc/tegra210-trusty.dtsi>
 
