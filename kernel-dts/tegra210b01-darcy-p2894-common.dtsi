@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, NVIDIA CORPORATION.  All rights reserved.
+ * Copyright (c) 2017-2018, NVIDIA CORPORATION.  All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -977,12 +977,5 @@
 		compatible = "nvidia,nvs_dsm";
 		status = "okay";
 	};
-
- 	pwm-fan {
- 		compatible = "pwm-fan";
- 		pwms = <&tegra_pwm 3 45334>;
- 		shared_data = <&pwm_fan_shared_data>;
- 		active_pwm = <0 80 120 160 255 255 255 255 255 255>;
- 	};
 
 };
