@@ -98,6 +98,7 @@
 
 	sdhci@700b0600 { /* SDMMC4 for EMMC */
 		uhs-mask = <0x0>;
+		mmc-hs400-enhanced-strobe;
 		built-in;
 		power-off-rail;
 		status = "okay";
@@ -110,6 +111,7 @@
 		uhs-mask = <0x8>;
 		max-clk-limit = <200000000>;
 		power-off-rail;
+		force-non-removable-rescan;
 		status = "okay";
 	};
 
@@ -121,7 +123,7 @@
 
 
 	chosen {
-		bootargs = "earlycon=uart8250,mmio32,0x70006000";
+		bootargs = "earlycon=uart8250,mmio32,0x70006000,androidboot.secureos=tlk";
 		stdout-path = &uarta;
 		nvidia,tegra-darcy-sku;
 		no-tnid-sn;
@@ -658,7 +660,7 @@
 		compatible = "pwm-leds";
 		lightbar {
 			label = "led_lightbar";
-			pwms = <&tegra_pwm 0 10000000>;
+			pwms = <&tegra_pwm 0 40161>;
 			gpios = <&gpio TEGRA_GPIO(V, 0) GPIO_ACTIVE_LOW>;
 			max-brightness = <255>;
 			default-brightness = <255>;
@@ -1071,4 +1073,7 @@
 		status = "okay";
 	};
 
+	tlk {
+		status = "okay";
+	};
 };
