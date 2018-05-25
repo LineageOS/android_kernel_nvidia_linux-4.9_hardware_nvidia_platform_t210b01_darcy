@@ -31,9 +31,7 @@
 #include <t210-common-platforms/tegra210-ers-hdmi-e2190-1100-a00.dtsi>
 #include "foster-platforms/tegra210-darcy-thermal-fan-est.dtsi"
 #include "foster-platforms/tegra210-loki-e-keys-p2530-0032-e00.dtsi"
-#include <tegra210-soc/tegra210-edp.dtsi>
 #include <dt-bindings/iio/meter/ina3221x.h>
-#include <t210-common-platforms/tegra210-sysedp.dtsi>
 #include <tegra210-soc/tegra210-audio.dtsi>
 #include "darcy-platforms/tegra210b01-darcy-cpufreq.dtsi"
 #include "darcy-platforms/tegra210b01-darcy-power-dvfs.dtsi"
@@ -676,11 +674,6 @@
 		};
 	};
 
-	cpu_edp {
-		status = "okay";
-		nvidia,edp_limit = <25000>;
-	};
-
 	sound_card: sound {
 #if defined(LINUX_VERSION) && LINUX_VERSION >= 409
 		compatible = "nvidia,tegra-audio-t210ref-mobile-rt565x";
@@ -762,11 +755,6 @@
 #endif
 	};
 
-	gpu_edp {
-		status = "okay";
-		nvidia,edp_limit = <25000>;
-	};
-
 	i2c@7000c400 {
 		ina3221x: ina3221x@40 {
 			channel@0 {
@@ -785,32 +773,6 @@
 				ti,shunt-resistor-mohm = <5>;
 			};
 		};
-	};
-
-	sysedp_reactive_capping@3 {
-		compatible = "nvidia,tegra124-sysedp_reactive_capping";
-		nvidia,max_capping_mw = <15000>;
-		nvidia,step_alarm_mw = <1000>;
-		nvidia,step_relax_mw = <500>;
-		nvidia,relax_ms = <250>;
-		interrupt-parent = <&soctherm>;
-		interrupts = <3 0x2002>;
-		sysedpc {
-			nvidia,name = "batmon_oc3";
-		};
-	};
-
-	sysedp {
-		compatible = "nvidia,tegra124-sysedp";
-		nvidia,margin = <0>;
-		nvidia,min_budget = <0>;
-		nvidia,initial_budget = <40000>;
-	};
-
-	sysedp-dynamic-capping {
-		compatible = "nvidia,tegra124-sysedp-dynamic-capping";
-		nvidia,throttle_depth = <75>;
-		nvidia,cap_method = <1>;
 	};
 
 	bcmdhd_wlan {
