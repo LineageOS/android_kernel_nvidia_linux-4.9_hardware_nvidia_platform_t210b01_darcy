@@ -1065,4 +1065,8 @@
 	tlk {
 		status = "okay";
 	};
+
+	tos-features {
+		eks2_path = "/vendor/app/eks2/eks2_mdarcy.dat";
+	};
 };
