@@ -153,6 +153,7 @@
 		nvidia,gpu-disable-power-saving;
 		firmware-blob-partition = "RP4";
 		verified-boot {
+			poweroff-on-red-state;
 			ui-timeout-ms {
 				yellow-state = <7000>;
 				red-state = <10000>;
