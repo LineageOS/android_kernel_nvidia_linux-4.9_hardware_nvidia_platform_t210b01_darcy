@@ -146,6 +146,8 @@
 					regulator-disable-ramp-delay = <640>;
 					regulator-ramp-delay = <100000>;
 					regulator-ramp-delay-scale = <200>;
+					/delete-property/ regulator-boot-on;
+					/delete-property/ regulator-always-on;
 				};
 
 				ldo6 {
@@ -154,6 +156,8 @@
 					regulator-disable-ramp-delay = <674>;
 					regulator-ramp-delay = <100000>;
 					regulator-ramp-delay-scale = <200>;
+					/delete-property/ regulator-boot-on;
+					/delete-property/ regulator-always-on;
 				};
 
 				ldo7 {
