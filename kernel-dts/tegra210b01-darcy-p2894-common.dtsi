@@ -604,39 +604,6 @@
 		status = "okay";
 	};
 
-	clock@70110000 {
-		status = "okay";
-		nvidia,pwm-to-pmic;
-		nvidia,init-uv = <800000>;
-		nvidia,sample-rate = <25000>;
-		nvidia,droop-ctrl = <0x00000f00>;
-		nvidia,force-mode = <1>;
-		nvidia,cf = <6>;
-		nvidia,ci = <0>;
-		nvidia,cg = <2>;
-		nvidia,idle-override;
-		nvidia,one-shot-calibrate;
-		nvidia,one-shot-settle-time = <100>;
-		nvidia,pwm-period = <2500>; /* 2.5us */
-		pinctrl-names = "dvfs_pwm_enable", "dvfs_pwm_disable";
-		pinctrl-0 = <&dvfs_pwm_active_state>;
-		pinctrl-1 = <&dvfs_pwm_inactive_state>;
-		nvidia,align-offset-uv = <500000>;
-		nvidia,align-step-uv = <19375>;
-	};
-
-	cpus {
-		cpu@0 {
-			clocks = <&tegra_car TEGRA210_CLK_CCLK_G>,
-				<&tegra_car TEGRA210_CLK_CCLK_LP>,
-				<&tegra_car TEGRA210_CLK_PLL_X>,
-				<&tegra_car TEGRA210_CLK_PLL_P_OUT4>,
-				<&tegra_clk_dfll>;
-			clock-names = "cpu_g", "cpu_lp", "pll_x", "pll_p", "dfll";
-			clock-latency = <300000>;
-		};
-	};
-
 	memory-controller@70019000 {
 		status = "okay";
         };
