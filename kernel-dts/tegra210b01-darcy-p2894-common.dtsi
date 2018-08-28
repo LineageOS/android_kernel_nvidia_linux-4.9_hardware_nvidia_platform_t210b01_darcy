@@ -196,6 +196,11 @@
 #if defined(LINUX_VERSION) && LINUX_VERSION >= 409
 	aconnect@702c0000 {
 #endif
+
+	adma: adma@702e2000 {
+		dma-channels = <2>;
+	};
+
 	ahub {
 		i2s@702d1100 {
 			pinctrl-names = "dap_active", "dap_inactive";
