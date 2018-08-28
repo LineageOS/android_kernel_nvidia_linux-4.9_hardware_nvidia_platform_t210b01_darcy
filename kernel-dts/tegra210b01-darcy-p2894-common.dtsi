@@ -1020,6 +1020,14 @@
 		};
 	};
 
+	i2c@7000c500 {
+		status = "disabled";
+	};
+
+	i2c@7000d100 {
+		status = "disabled";
+	};
+
 	nvdumper {
 		status = "okay";
 	};
