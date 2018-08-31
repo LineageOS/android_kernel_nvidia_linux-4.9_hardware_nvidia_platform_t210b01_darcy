@@ -667,8 +667,8 @@
 
 	soctherm@0x700E2000 {
 		status = "okay";
-		throttle@oc1 {
-			status = "disabled";
+		throttle-cfgs {
+			/delete-node/ oc1;
 		};
 	};
 
