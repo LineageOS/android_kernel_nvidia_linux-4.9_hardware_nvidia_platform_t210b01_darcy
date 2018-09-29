@@ -1036,6 +1036,12 @@
 		status = "disabled";
 	};
 
+	efuse@7000f800 {
+		efuse-burn {
+			nvidia,redundant-aid-war;
+		};
+	};
+
 	nvdumper {
 		status = "okay";
 	};
