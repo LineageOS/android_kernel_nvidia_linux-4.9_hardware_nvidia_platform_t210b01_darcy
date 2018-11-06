@@ -43,10 +43,30 @@
 		status = "okay";
 	};
 
+	gpio@6000d000 {
+		wlan-default-input {
+			label = "wifi-wake-ap";
+		};
+		wlan-default-output-high {
+			label = "wifi-enable";
+		};
+	};
+
 	bcmdhd_wlan {
 		fw_path = "/system/vendor/firmware/fw_bcmdhd.bin";
 		nv_path = "/system/vendor/firmware/nvram_darcy_a00.txt";
 		tuned_nv_path = "/system/vendor/firmware/nvram_darcy_a00.txt";
+		status = "disabled";
+	};
+
+	bcm4356: brcmfmac_pcie_wlan {
+		compatible = "brcm,android-fmac";
+		interrupt-parent = <&gpio>;
+		interrupts = <TEGRA_GPIO(H, 2) 0x14>;
+		nvidia,pmc-wakeup = <&tegra_pmc
+		PMC_WAKE_TYPE_EVENT 8 PMC_TRIGGER_TYPE_HIGH>;
+		wlan-pwr-gpio = <&gpio TEGRA_GPIO(H, 0) 0>;
+		status = "okay";
 	};
 
 	serial@70006300 {
