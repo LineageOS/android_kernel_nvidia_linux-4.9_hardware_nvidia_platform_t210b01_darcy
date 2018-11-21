@@ -1058,4 +1058,11 @@
 	tos-features {
 		eks2_path = "/vendor/app/eks2/eks2_mdarcy.dat";
 	};
+
+	actmon@6000c800 {
+		status = "disabled";
+		mc_all {        /* MC_ALL actmon device */
+			status = "disabled";
+		};
+	};
 };
