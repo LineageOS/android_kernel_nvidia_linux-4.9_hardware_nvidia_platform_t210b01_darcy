@@ -1036,6 +1036,11 @@
 		};
 	};
 
+	rtc {
+		nvidia,pmc-wakeup = <&tegra_pmc PMC_WAKE_TYPE_EVENT 16
+				     PMC_TRIGGER_TYPE_HIGH>;
+	};
+
 	nvdumper {
 		status = "okay";
 	};
