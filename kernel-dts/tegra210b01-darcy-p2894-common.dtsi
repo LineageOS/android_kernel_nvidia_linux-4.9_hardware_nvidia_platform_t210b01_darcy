@@ -645,8 +645,9 @@
 	};
 
 	gpio-timed-keys {
-		status="disabled";
-		disable-on-recovery-kernel;
+		power {
+			gpios = <&gpio TEGRA_GPIO(X, 7) GPIO_ACTIVE_LOW>;
+		};
 	};
 
 	pwm-leds {
