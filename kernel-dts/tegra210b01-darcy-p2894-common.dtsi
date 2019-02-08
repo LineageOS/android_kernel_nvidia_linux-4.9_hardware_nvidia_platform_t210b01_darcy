@@ -43,7 +43,7 @@
 		android {
 			compatible = "android,firmware";
 			first_stage_delay = "1";
-			system_root_blkdev = "/dev/mmcblk0p19";
+			system_root_blkdev = "/dev/mmcblk0p18";
 
 			fstab {
 				compatible = "android,fstab";
