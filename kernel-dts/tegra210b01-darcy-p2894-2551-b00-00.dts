@@ -348,7 +348,7 @@
 	};
 
 	i2c@7000c000 {
-		status = "disabled";
+		status = "okay";
 
 		tegra_nct72: temp-sensor@4c {
 			status = "disabled";
