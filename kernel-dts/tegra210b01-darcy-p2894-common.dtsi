@@ -1112,4 +1112,13 @@
 			status = "disabled";
 		};
 	};
+	emcb01_dvb_dvfs_override {
+		compatible = "nvidia,t210b01-emc-dvb-dvfs";
+		nvidia,freq-x-bin-min-volt = <204000 750 750 750
+			408000		750 750 750
+			800000 		750 750 750
+			1065600 	800 800 800
+			1331200		800 800 800
+			1600000		800 800 800>;
+	};
 };
