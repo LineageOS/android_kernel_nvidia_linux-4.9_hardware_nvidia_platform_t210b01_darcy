@@ -68,6 +68,7 @@
 			phy-names = "pcie-0", "pcie-1";
 #endif
 			nvidia,num-lanes = <2>;
+			nvidia,disable-clock-request;
 			status = "okay";
 		};
 
