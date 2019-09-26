@@ -19,7 +19,7 @@
  */
 #include "tegra210b01-darcy-p2894-common.dtsi"
 #include "foster-platforms/tegra210-darcy-pinmux-p2894-0000-a00.dtsi"
-#include "darcy-platforms/tegra210b01-darcy-power-tree-p2894-0000-a00.dtsi"
+#include "darcy-platforms/tegra210b01-darcy-power-tree-p2894-3551-b03.dtsi"
 #include "darcy-platforms/tegra210b01-darcy-extcon-p2894-0000-a00.dtsi"
 #include "darcy-platforms/tegra210b01-darcy-pcie.dtsi"
 
@@ -49,6 +49,21 @@
 		};
 		wlan-default-output-high {
 			label = "wifi-enable";
+		};
+		boot-default-output-low {
+			gpio-hog;
+			output-low;
+			gpios = <
+				TEGRA_GPIO(A, 6) 0
+				TEGRA_GPIO(BB, 2) 0
+				TEGRA_GPIO(E, 4) 0
+				TEGRA_GPIO(D, 4) 0
+				TEGRA_GPIO(H, 0) 0
+				TEGRA_GPIO(H, 3) 0
+				TEGRA_GPIO(H, 4) 0
+				TEGRA_GPIO(CC, 7) 0
+				>;
+			line-name = "boot-default-output-low";
 		};
 	};
 
