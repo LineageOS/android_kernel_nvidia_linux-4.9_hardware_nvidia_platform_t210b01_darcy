@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, NVIDIA CORPORATION.  All rights reserved.
+ * Copyright (c) 2018-2019, NVIDIA CORPORATION.  All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -20,7 +20,7 @@
 		polling_period = <1100>;
 		ndevs = <1>;
 		cdev_type = "pwm-fan";
-		tzp_governor_name = "pid_thermal_gov";
+		tzp_governor_name = "continuous_therm_gov";
 
 		dev1 {
 			dev_data = "CPU-therm";
@@ -35,9 +35,29 @@
 		num_resources = <0>;
 		shared_data = <&thermal_fan_est_shared_data>;
 		trip_length = <10>;
-		active_trip_temps = <0 63000 73000 82000 88000
-				140000 150000 160000 170000 180000>;
-		active_hysteresis = <0 24000 9000 8000 5000
-				0 0 0 0 0>;
+		thermal-zone-params {
+			governor-name = "continuous_therm_gov";
+			iir_power = <7>;
+			iir_min = <10>;
+			iir_max = <1000>;
+			iir_gain_qp = <1000>;
+			iir_upper_width = <5000>;
+			iir_lower_width = <15000>;
+		};
+		profiles {
+			default = "quiet";
+			quiet {
+				active_trip_temps = <0 65000 60000 82000 88000
+						140000 150000 160000 170000 180000>;
+				active_hysteresis = <0 25000 0 0 0
+						0 0 0 0 0>;
+			};
+			cool {
+				active_trip_temps = <0 55000 50000 72000 78000
+						140000 150000 160000 170000 180000>;
+				active_hysteresis = <0 20000 0 0 0
+						0 0 0 0 0>;
+			};
+		};
 	};
 };

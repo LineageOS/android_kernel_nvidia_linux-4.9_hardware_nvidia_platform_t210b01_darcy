@@ -1,7 +1,7 @@
 /*
- * arch/arm64/boot/dts/tegra210-darcy-p2894-0050-a08-00.dts
+ * arch/arm64/boot/dts/tegra210b01-darcy-p2894-0050-a08-00.dts
  *
- * Copyright (c) 2016-2018, NVIDIA CORPORATION.  All rights reserved.
+ * Copyright (c) 2016-2019, NVIDIA CORPORATION.  All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 	compatible = "nvidia,darcy", "nvidia,foster-e", "nvidia,tegra210b01";
 	nvidia,dtsfilename = __FILE__;
 	nvidia,dtbbuildtime = __DATE__, __TIME__;
-	nvidia,fastboot-usb-pid = <0xb442>;
+	nvidia,fastboot-usb-pid = <0xb423>;
 
 	firmware {
 		android {
@@ -73,7 +73,7 @@
 	};
 
 	i2c@7000c000 {
-		status = "disabled";
+		status = "okay";
 
 		tegra_nct72: temp-sensor@4c {
 			status = "disabled";
@@ -81,3 +81,7 @@
 	};
 
 };
+
+#if LINUX_VERSION >= 414
+#include <tegra210-linux-4.14.dtsi>
+#endif

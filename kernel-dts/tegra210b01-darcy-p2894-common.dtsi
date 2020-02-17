@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018, NVIDIA CORPORATION.  All rights reserved.
+ * Copyright (c) 2017-2019, NVIDIA CORPORATION.  All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,23 +42,18 @@
 	firmware {
 		android {
 			compatible = "android,firmware";
-			first_stage_delay = "1";
-
+			vbmeta {
+				compatible = "android,vbmeta";
+				parts = "vbmeta,DTB,LNX,APP,vendor,SOS";
+			};
 			fstab {
 				compatible = "android,fstab";
-				system {
-					compatible = "android,system";
-					dev = "/dev/block/platform/sdhci-tegra.3/by-name/APP";
-					type = "ext4";
-					mnt_flags = "ro,noatime";
-					fsmgr_flags = "wait,verify=/dev/block/platform/sdhci-tegra.3/by-name/MDA";
-				};
 				vendor {
 					compatible = "android,vendor";
 					dev = "/dev/block/platform/sdhci-tegra.3/by-name/vendor";
 					type = "ext4";
 					mnt_flags = "ro,noatime";
-					fsmgr_flags = "wait,verify=/dev/block/platform/sdhci-tegra.3/by-name/MDA";
+					fsmgr_flags = "wait,avb";
 				};
 			};
 		};
@@ -129,6 +124,11 @@
 		status = "okay";
 		bus-width = <8>;
 		non-removable;
+		/delete-property/ nvidia,enable-hs533-mode;
+		no-sdio;
+		no-sd;
+		pll_source = "pll_p", "pll_c4_out2";
+		max-clk-limit = <0xbebc200>;
 	};
 
 	sdhci@700b0200 { /* SDMMC2 for Wifi */
@@ -148,7 +148,7 @@
 
 
 	chosen {
-		bootargs = "earlycon=uart8250,mmio32,0x70006000, androidboot.secureos=tlk";
+		bootargs = "earlycon=uart8250,mmio32,0x70006000, androidboot.secureos=tlk strict_cma=on";
 		stdout-path = &uarta;
 		nvidia,tegra-darcy-sku;
 		no-tnid-sn;
@@ -159,6 +159,7 @@
 		nvidia,gpu-disable-power-saving;
 		firmware-blob-partition = "RP4";
 		verified-boot {
+			poweroff-on-red-state;
 			ui-timeout-ms {
 				yellow-state = <7000>;
 				red-state = <10000>;
@@ -593,6 +594,11 @@
 		};
 		dpaux1 {
 			status = "okay";
+			prod-settings {
+				prod_c_dpaux_hdmi {
+					prod = <0x00000124 0x00010000 0x00010000>;
+				};
+			};
 		};
 		vi {
 			status = "okay";
@@ -651,8 +657,9 @@
 	};
 
 	gpio-timed-keys {
-		status="disabled";
-		disable-on-recovery-kernel;
+		power {
+			gpios = <&gpio TEGRA_GPIO(X, 7) GPIO_ACTIVE_LOW>;
+		};
 	};
 
 	pwm-leds {
@@ -669,8 +676,8 @@
 
 	soctherm@0x700E2000 {
 		status = "okay";
-		throttle@oc1 {
-			status = "disabled";
+		throttle-cfgs {
+			/delete-node/ oc1;
 		};
 	};
 
@@ -694,11 +701,13 @@
 			<&tegra_car TEGRA210_CLK_EXTERN1>;
 		assigned-clock-rates = <368640000>, <36864000>,
 			<36864000>, <12288000>;
-		nvidia,num-codec-link = <1>;
+		nvidia,num-codec-link = <2>;
 
 		nvidia,audio-routing =
 			"y Headphone", 	"y OUT",
-			"y IN",		"y Mic";
+			"y IN",		"y Mic",
+			"x Headphone",	"x OUT",
+			"x IN",		"x Mic";
 
 		nvidia,xbar = <&tegra_axbar>;
 
@@ -724,14 +733,36 @@
 			ignore_suspend;
 			name-prefix = "y";
 		};
+
+		nvidia,dai-link-2 {
+			link-name = "spdif-dit-1";
+			cpu-dai = <&tegra_i2s1>;
+			codec-dai = <&spdif_dit1>;
+			cpu-dai-name = "I2S1";
+			codec-dai-name = "dit-hifi";
+			format = "i2s";
+			bitclock-slave;
+			frame-slave;
+			bitclock-inversion;
+			frame-noninversion;
+			bit-format = "s16_le";
+			bclk_ratio = <1>;
+			srate = <48000>;
+			num-channel = <2>;
+			ignore_suspend;
+			name-prefix = "x";
+		};
+
 #else
 		compatible = "nvidia,tegra-audio-t210ref-mobile-foster";
 		nvidia,model = "tegra-snd-t210ref-mobile-es755";
-		nvidia,num-codec-link = <1>;
+		nvidia,num-codec-link = <2>;
 
 		nvidia,audio-routing =
 			"y Headphone", 	"y OUT",
-			"y IN",		"y Mic";
+			"y IN",		"y Mic",
+			"x Headphone",	"x OUT",
+			"x IN",		"x Mic";
 
 		nvidia,xbar = <&tegra_axbar>;
 
@@ -752,6 +783,26 @@
 			num-channel = <1>;
 			name-prefix = "y";
 		};
+
+		nvidia,dai-link-2 {
+			link-name = "spdif-dit-2";
+			cpu-dai = <&tegra_i2s1>;
+			codec-dai = <&spdif_dit2>;
+			cpu-dai-name = "I2S1";
+			codec-dai-name = "dit-hifi";
+			format = "i2s";
+			bitclock-slave;
+			frame-slave;
+			bitclock-inversion;
+			frame-noninversion;
+			bit-format = "s16_le";
+			bclk_ratio = <1>;
+			srate = <48000>;
+			num-channel = <2>;
+			ignore_suspend;
+			name-prefix = "x";
+		};
+
 #endif
 	};
 
@@ -775,260 +826,6 @@
 		};
 	};
 
-	bcmdhd_wlan {
-		sdhci-host = <&sdmmc2>;
-		pwr-retry-cnt = <5>;
-		builtin-roam-disabled;
-		clm_blob_path = "/vendor/firmware/bcmdhd_clm_darcy.blob";
-		country_code_map {
-			CC_XV {
-				iso_abbrev = "XV";
-				custom_locale = "XV";
-				custom_locale_rev = <0>;
-			};
-			CC_US {
-				iso_abbrev = "US";
-				custom_locale = "US";
-				custom_locale_rev = <0>;
-			};
-			CC_CA {
-				iso_abbrev = "CA";
-				custom_locale = "Q2";
-				custom_locale_rev = <0>;
-			};
-			CC_AT {
-				iso_abbrev = "AT";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_BE {
-				iso_abbrev = "BE";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_BG {
-				iso_abbrev = "BG";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_HR {
-				iso_abbrev = "HR";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_CY {
-				iso_abbrev = "CY";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_CZ {
-				iso_abbrev = "CZ";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_DK {
-				iso_abbrev = "DK";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_EE {
-				iso_abbrev = "EE";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_FI {
-				iso_abbrev = "FI";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_FR {
-				iso_abbrev = "FR";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_DE {
-				iso_abbrev = "DE";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_GR {
-				iso_abbrev = "GR";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_HU {
-				iso_abbrev = "HU";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_IS {
-				iso_abbrev = "IS";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_IE {
-				iso_abbrev = "IE";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_IT {
-				iso_abbrev = "IT";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_LV {
-				iso_abbrev = "LV";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_LI {
-				iso_abbrev = "LI";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_LT {
-				iso_abbrev = "LT";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_LU {
-				iso_abbrev = "LU";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_MT {
-				iso_abbrev = "MT";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_NL {
-				iso_abbrev = "NL";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_NO {
-				iso_abbrev = "NO";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_PL {
-				iso_abbrev = "PL";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_PT {
-				iso_abbrev = "PT";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_RO {
-				iso_abbrev = "RO";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_SK {
-				iso_abbrev = "SK";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_SI {
-				iso_abbrev = "SI";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_ES {
-				iso_abbrev = "ES";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_SE {
-				iso_abbrev = "SE";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_CH {
-				iso_abbrev = "CH";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_TR {
-				iso_abbrev = "TR";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_GB {
-				iso_abbrev = "GB";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_EU {
-				iso_abbrev = "EU";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_E0 {
-				iso_abbrev = "E0";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_AU {
-				iso_abbrev = "AU";
-				custom_locale = "AU";
-				custom_locale_rev = <0>;
-			};
-			CC_CN {
-				iso_abbrev = "CN";
-				custom_locale = "CN";
-				custom_locale_rev = <0>;
-			};
-			CC_IN {
-				iso_abbrev = "IN";
-				custom_locale = "IN";
-				custom_locale_rev = <0>;
-			};
-			CC_JP {
-				iso_abbrev = "JP";
-				custom_locale = "JP";
-				custom_locale_rev = <0>;
-			};
-			CC_KR {
-				iso_abbrev = "KR";
-				custom_locale = "KR";
-				custom_locale_rev = <0>;
-			};
-			CC_RU {
-				iso_abbrev = "RU";
-				custom_locale = "RU";
-				custom_locale_rev = <0>;
-			};
-			CC_TW {
-				iso_abbrev = "TW";
-				custom_locale = "US";
-				custom_locale_rev = <0>;
-			};
-			CC_SG {
-				iso_abbrev = "SG";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_HK {
-				iso_abbrev = "HK";
-				custom_locale = "DE";
-				custom_locale_rev = <0>;
-			};
-			CC_NZ {
-				iso_abbrev = "NZ";
-				custom_locale = "AU";
-				custom_locale_rev = <0>;
-			};
-			CC_AP {
-				iso_abbrev = "AP";
-				custom_locale = "XY";
-				custom_locale_rev = <0>;
-			};
-		};
-	};
-
 	i2c@7000c500 {
 		status = "disabled";
 	};
@@ -1041,6 +838,11 @@
 		efuse-burn {
 			nvidia,redundant-aid-war;
 		};
+	};
+
+	rtc {
+		nvidia,pmc-wakeup = <&tegra_pmc PMC_WAKE_TYPE_EVENT 16
+				     PMC_TRIGGER_TYPE_HIGH>;
 	};
 
 	nvdumper {
@@ -1058,5 +860,21 @@
 
 	tos-features {
 		eks2_path = "/vendor/app/eks2/eks2_mdarcy.dat";
+	};
+
+	actmon@6000c800 {
+		status = "disabled";
+		mc_all {        /* MC_ALL actmon device */
+			status = "disabled";
+		};
+	};
+	emcb01_dvb_dvfs_override {
+		compatible = "nvidia,t210b01-emc-dvb-dvfs";
+		nvidia,freq-x-bin-min-volt = <204000 750 750 750
+			408000		750 750 750
+			800000 		750 750 750
+			1065600 	800 800 800
+			1331200		800 800 800
+			1600000		800 800 800>;
 	};
 };
