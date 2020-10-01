@@ -316,6 +316,7 @@
 	};
 
 	serial@70006300 {
+		dma-names = "tx";
 		nvidia,enable-rx-buffer-throttling;
 	};
 
