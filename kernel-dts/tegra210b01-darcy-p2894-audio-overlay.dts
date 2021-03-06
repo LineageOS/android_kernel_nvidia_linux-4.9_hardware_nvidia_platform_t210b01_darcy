@@ -1,0 +1,119 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/tegra210-car.h>
+
+/ {
+	overlay-name = "r32 Shield Audio Update";
+
+	fragment@0 {
+		target = <&sound_card>;
+		__overlay__ {
+			clocks = <&tegra_car TEGRA210_CLK_PLL_P_OUT1>,
+				<&tegra_car TEGRA210_CLK_PLL_A>,
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
+				<&tegra_car TEGRA210_CLK_CLK_M>,
+				<&tegra_car TEGRA210_CLK_EXTERN1>;
+			clock-names = "pll_p_out1", "pll_a", "pll_a_out0",
+				"clk_m", "extern1";
+
+			assigned-clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
+				<&tegra_car TEGRA210_CLK_EXTERN1>;
+			assigned-clock-rates = <368640000>, <36864000>,
+				<12288000>;
+
+			nvidia,dai-link-1 {
+				link-name = "spdif-dit-0";
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&tegra_axbar>;
+		__overlay__ {
+			clock-names = "ahub", "parent", "xbar.ape", "apb2ape";
+			assigned-clocks = <&tegra_car TEGRA210_CLK_D_AUDIO>;
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_P>;
+			assigned-clock-rates = <81600000>;
+		};
+	};
+
+	fragment@2 {
+		target = <&tegra_i2s1>;
+		__overlay__ {
+			clock-names = "i2s", "i2s_clk_parent", "ext_audio_sync",
+				      "audio_sync";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+
+	fragment@3 {
+		target = <&tegra_i2s2>;
+		__overlay__ {
+			clock-names = "i2s", "i2s_clk_parent", "ext_audio_sync",
+				      "audio_sync";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+
+	fragment@4 {
+		target = <&tegra_i2s3>;
+		__overlay__ {
+			clock-names = "i2s", "i2s_clk_parent", "ext_audio_sync",
+				      "audio_sync";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+
+	fragment@5 {
+		target = <&tegra_i2s4>;
+		__overlay__ {
+			clock-names = "i2s", "i2s_clk_parent", "ext_audio_sync",
+				      "audio_sync";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+
+	fragment@6 {
+		target = <&tegra_i2s5>;
+		__overlay__ {
+			clock-names = "i2s", "i2s_clk_parent", "ext_audio_sync",
+				      "audio_sync";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+
+	fragment@7 {
+		target = <&tegra_dmic1>;
+		__overlay__ {
+			clock-names = "dmic", "parent";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+
+	fragment@8 {
+		target = <&tegra_dmic2>;
+		__overlay__ {
+			clock-names = "dmic", "parent";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+
+	fragment@9 {
+		target = <&tegra_dmic3>;
+		__overlay__ {
+			clock-names = "dmic", "parent";
+			assigned-parent-clocks =
+				<&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
+		};
+	};
+};
